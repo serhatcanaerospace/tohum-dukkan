@@ -1,0 +1,384 @@
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Tohum Dükkanı: Anadolu’nun organik tohumları, konserveleri, turşuları ve sirkeleriyle zehirsiz bir gelecek! Çocuklar için sağlıklı, hızlı kargo, samimi destek.">
+  <meta name="keywords" content="organik tohum, zehirsiz konserve, doğal turşu, organik sirke, çocuk sağlığı, Anadolu lezzetleri, organik bahçecilik, menemen, ata tohumu">
+  <meta name="author" content="Tohum Dükkanı">
+  <title>Tohum Dükkanı - Anadolu’nun Bereketi</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background-color: #f5f5f5; font-family: 'Poppins', sans-serif; }
+    .card { transition: transform 0.2s, box-shadow 0.2s; }
+    .card:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
+    header, footer { background-color: #166534; }
+    .btn-primary { background-color: #d4a017; }
+    .btn-primary:hover { background-color: #b38b14; }
+    .hero-bg { background-image: url('https://images.unsplash.com/photo-1598030343309-b83d3f7fe6b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920'); background-size: cover; background-position: center; }
+  </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <!-- Header -->
+  <header class="text-white py-4">
+    <div class="container mx-auto flex justify-between items-center px-4">
+      <h1 class="text-3xl font-bold">Tohum Dükkanı</h1>
+      <nav class="flex space-x-4">
+        <a href="#home" class="px-3 py-2 hover:underline">Ana Sayfa</a>
+        <a href="#products" class="px-3 py-2 hover:underline">Ürünler</a>
+        <a href="#blog" class="px-3 py-2 hover:underline">Blog</a>
+        <a href="#about" class="px-3 py-2 hover:underline">Hakkımızda</a>
+        <a href="#cart" class="px-3 py-2 hover:underline">Sepet (<span id="cart-count">0</span>)</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section id="home" class="hero-bg py-20 text-center text-white">
+    <div class="container mx-auto px-4 bg-black bg-opacity-50 py-10 rounded-lg">
+      <h2 class="text-4xl font-bold mb-4">Anadolu’nun Bereketiyle Sağlıklı Bir Gelecek!</h2>
+      <p class="text-lg mb-6">Biz bir aileyiz, Anadolu’nun organik tohumları, konserveleri, turşuları ve sirkeleriyle çocuklarınızın sağlığını koruyoruz. Zehirsiz, kimyasalsız, samimi bir sofraya davetlisiniz!</p>
+      <a href="#products" class="btn-primary text-white py-2 px-6 rounded-lg font-semibold">Keşfet</a>
+      <p class="text-sm mt-4 font-semibold">İlk 100 siparişe nane tohumu hediye! 🎁</p>
+    </div>
+  </section>
+
+  <!-- Featured Products -->
+  <section class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8 text-green-800">Öne Çıkan Lezzetlerimiz</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="featured-products"></div>
+    </div>
+  </section>
+
+  <!-- Blog Showcase -->
+  <section class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-6">Anadolu’nun Sırları</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Hormonlu Ürünlerin Çocuk Sağlığına Zararları</h3>
+          <p class="text-sm text-gray-600">Kimyasal yüklü gıdalar çocuklarınızı tehdit ediyor. Organik tohum ve konservelerle zehirsiz sofralar...</p>
+          <a href="#blog" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Köylerimizde Turşu Yapımı Gelenekleri</h3>
+          <p class="text-sm text-gray-600">Anadolu’nun köylerinde turşu nasıl yapılır? Geleneksel sırlar...</p>
+          <a href="#blog" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Evde Organik Sirke Yapımı</h3>
+          <p class="text-sm text-gray-600">Doğal sirkelerle bağışıklığınızı güçlendirin. 5 kolay adım...</p>
+          <a href="#blog" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Customer Reviews -->
+  <section class="py-16 bg-gradient-to-r from-green-100 to-green-200">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-8 text-green-800">Ailemiz Ne Diyor?</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <p class="text-sm text-gray-600 italic">"Bu tohumlarla bahçem şenlendi, çocuklarıma zehirsiz sebzeler!"</p>
+          <p class="text-sm font-bold text-green-700 mt-2">Fatma, İzmir</p>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <p class="text-sm text-gray-600 italic">"Menemen ve turşular harika, sanki köydeymişiz gibi!"</p>
+          <p class="text-sm font-bold text-green-700 mt-2">Ahmet, Ankara</p>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <p class="text-sm text-gray-600 italic">"Lavanta tohumuyla bahçem bir cennet oldu, teşekkürler!"</p>
+          <p class="text-sm font-bold text-green-700 mt-2">Zeynep, Antalya</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Products Section -->
+  <section id="products" class="py-16 bg-white">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8 text-green-800">Anadolu’nun Zehirsiz Lezzetleri</h2>
+      <div id="product-list" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+    </div>
+  </section>
+
+  <!-- Blog Section -->
+  <section id="blog" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8 text-green-800">Anadolu’nun Bahçecilik ve Lezzet Sırları</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Hormonlu Ürünlerin Çocuk Sağlığına Zararları</h3>
+          <p class="text-sm text-gray-600">Yıllardır hormonlu gıdalar sofralarımızda. Alerji, obezite ve bağışıklık sorunları artıyor! Organik tohum, konserve ve turşularla zehirsiz bir gelecek...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Köylerimizde Turşu Yapımı Gelenekleri</h3>
+          <p class="text-sm text-gray-600">Anadolu’nun köylerinde dedelerimizin turşu sırları. Doğal, fermente, probiyotik deposu...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Evde Organik Sirke Yapımı</h3>
+          <p class="text-sm text-gray-600">Üzüm ve elma sirkesiyle bağışıklığınızı güçlendirin. 5 kolay adımla evde sirke...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Anadolu’da Menemenin Hikayesi</h3>
+          <p class="text-sm text-gray-600">Taptaze domateslerle yapılan organik menemen, Anadolu’nun kahvaltı sırrı...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Dedelerimizin Tohum Saklama Sırları</h3>
+          <p class="text-sm text-gray-600">Anadolu’da ata tohumları nasıl korundu? Köylerden sofranıza...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Evde Lavanta Yetiştirme Rehberi</h3>
+          <p class="text-sm text-gray-600">Ege’nin mis kokulu lavantasıyla bahçenize huzur katın. 5 basit adım...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Zeytin Tohumuyla Geleceğe Miras</h3>
+          <p class="text-sm text-gray-600">Akdeniz’in bereketli zeytin tohumuyla nesillere miras bırakın...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Çim Ekimi: Anadolu’nun Yeşil Sırları</h3>
+          <p class="text-sm text-gray-600">Bahçenizi organik çim tohumlarıyla yeşillendirin. Pratik rehber...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Bayram Sofralarında Organik Lezzetler</h3>
+          <p class="text-sm text-gray-600">Turşu, menemen ve sirkelerle bayram sofralarınızı şenlendirin...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Köy Kahvesinde Tohum Hikayeleri</h3>
+          <p class="text-sm text-gray-600">Anadolu’nun köylerinde anlatılan tohum ve turşu sırları...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Organik Menemenle Sağlıklı Kahvaltılar</h3>
+          <p class="text-sm text-gray-600">Anadolu’nun taptaze domatesleriyle kahvaltılarınızı renklendirin...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+        <div class="card bg-white p-4 rounded-lg shadow">
+          <h3 class="text-lg font-bold text-green-700">Sirkelerin Bağışıklığa Faydaları</h3>
+          <p class="text-sm text-gray-600">Organik sirkelerle sağlığınızı koruyun. Bilimsel faydalar...</p>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section id="about" class="py-16 bg-gradient-to-r from-green-100 to-green-200">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-8 text-green-800">Biz Bir Aileyiz!</h2>
+      <p class="text-lg mb-6 text-gray-700">Tohum Dükkanı, Anadolu’nun bereketli topraklarından ilham alan bir aile. Organik tohumlar, konserveler, turşular ve sirkelerle çocuklarınızın sağlığını koruyor, zehirsiz bir gelecek inşa ediyoruz. Sanki komşunuzla kahve içermiş gibi, her zaman yanınızdayız!</p>
+      <p class="text-sm text-gray-600 font-semibold">7/24 Samimi Destek: +90 555 123 4567 | %100 Memnuniyet Garantisi</p>
+    </div>
+  </section>
+
+  <!-- Cart Section -->
+  <section id="cart" class="py-16 bg-gray-50">
+    <div class="container mx-auto px-4">
+      <h2 class="text-3xl font-bold text-center mb-8 text-green-800">Sepetiniz</h2>
+      <div id="cart-items" class="space-y-4"></div>
+      <div id="cart-total" class="text-xl font-bold mt-4 text-green-700">Toplam: 0 TL</div>
+      <p class="text-sm mt-2 text-gray-600">Kargo: 15 TL. 50 TL üzeri ücretsiz kargo! Sipariş için WhatsApp’tan bize yaz, abi-kardeş konuşalım!</p>
+      <button id="checkout-btn" class="btn-primary text-white py-2 px-6 rounded-lg mt-4 font-semibold">Siparişi Hesapla</button>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="text-white py-4">
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-lg font-semibold">© 2025 Tohum Dükkanı. Anadolu’nun Bereketi. 🌱</p>
+      <p class="text-sm">WhatsApp: +90 555 123 4567 | Türkiye’nin Her Yerine Kargo | 7/24 Samimi Destek</p>
+    </div>
+  </footer>
+
+  <script>
+    // Ürünler (Geniş Yelpaze)
+    const products = [
+      // Sebze Tohumları
+      { id: 1, name: "Organik Çanakkale Domates Tohumu", price: 25, description: "Anadolu’nun bereketli Çanakkale topraklarından %100 organik ata tohumu. Zehirsiz, çocuklar için sağlıklı!", category: "Sebze" },
+      { id: 2, name: "Organik Ege Salatalık Tohumu", price: 20, description: "Ege’nin güneşinden gelen ata tohumu. Kimyasalsız, yüksek verim!", category: "Sebze" },
+      { id: 3, name: "Organik Akdeniz Biber Tohumu", price: 28, description: "Akdeniz’in sıcacık ata tohumu. Zehirsiz, sofralarınıza sağlık!", category: "Sebze" },
+      { id: 4, name: "Organik Anadolu Maydanoz Tohumu", price: 18, description: "Anadolu’nun taze maydanozu. %100 organik, kimyasalsız!", category: "Sebze" },
+      { id: 5, name: "Organik Karadeniz Lahana Tohumu", price: 22, description: "Karadeniz’in verimli topraklarından ata tohumu. Zehirsiz, sağlıklı!", category: "Sebze" },
+      { id: 6, name: "Organik Trakya Patlıcan Tohumu", price: 24, description: "Trakya’nın bereketli ata tohumu. Kimyasalsız, lezzetli!", category: "Sebze" },
+      { id: 7, name: "Organik Marmara Ispanak Tohumu", price: 19, description: "Marmara’nın sağlıklı ıspanağı. Organik, çocuklar için!", category: "Sebze" },
+      { id: 8, name: "Organik Ege Kabak Tohumu", price: 21, description: "Ege’nin hafif kabağı.", category: "Zehirsiz" },
+      { id: 9, name: "Organik Anadolu Marul Tohumu", price: 17, description: "Anadolu’nun çıtır marulu.", category: "Organik" },
+      { id: 10, name: "Organik Karadeniz Fasulye Tohumu", price: 26, description: "Karadeniz’in lezzetli fasulyesi.", category: "%100 organik!" },
+      // Çiçek Tohumları
+      { id: 11, name: "Organik Ege Lavanta Tohumu", price: 30, description: "Ege’nin mis kokulu lavantası. %100 organik, bahçenize huzur!", category: "Çiçek" },
+      { id: 12, name: "Organik Trakya Papatya Tohumu", price: 25, description: "Trakya’nın zarif papatyası. Zehirsiz, doğal güzellik!", category: "Çiçek" },
+      { id: 13, name: "Organik Anadolu Menekşe Tohumu", price: 28, description: "Anadolu’nun renkli menekşesi. %100 organik, neşeli!", category: "Çiçek" },
+      { id: 14, name: "Organik Karadeniz Gül Tohumu", price: 27, description: "Karadeniz’in aşk gülleri. %100 organik, zehirsiz!", category: "Çiçek" },
+      { id: 15, name: "Organik Akdeniz Sardunya Tohumu", price: 24, description: "Akdeniz’in renkli sardunyası. Doğal, kimyasalsız!", category: "Çiçek" },
+      { id: 16, name: "Organik Ege Zinya Tohumu", price: 20, description: "Ege’nin canlı zinya çiçeği. Zehirsiz, bahçenize renk!", category: "Çiçek" },
+      { id: 17, name: "Organik Anadolu Kadife Çiçeği Tohumu", price: 18, description: "Anadolu’nun sıcak kadifesi. %100 organik!", category: "Çiçek" },
+      { id: 18, name: "Organik Trakya Ayçiçek Tohumu", price: 26, description: "Trakya’nın güneş çiçeği. Kimyasalsız, doğal!", category: "Çiçek" },
+      // Ağaç Fidan Tohumları
+      { id: 19, name: "Organik Akdeniz Zeytin Tohumu", price: 35, description: "Akdeniz’in bereketli zeytini. Zehirsiz, nesillere miras!", category: "Fidan" },
+      { id: 20, name: "Organik Ege İncir Tohumu", price: 32, description: "Ege’nin tatlı inciri. %100 organik, kimyasalsız!", category: "Fidan" },
+      { id: 21, name: "Organik Anadolu Çam Tohumu", price: 30, description: "Anadolu’nun heybetli çamı. Zehirsiz, doğaya katkı!", category: "Fidan" },
+      { id: 22, name: "Organik Trakya Elma Tohumu", price: 28, description: "Trakya’nın çıtır elması. %100 organik, sağlıklı!", category: "Fidan" },
+      { id: 23, name: "Organik Karadeniz Kiraz Tohumu", price: 33, description: "Karadeniz’in sulu kirazı. Kimyasalsız, doğal!", category: "Fidan" },
+      // Çim Tohumları
+      { id: 24, name: "Organik Bahçe Çim Tohumu", price: 40, description: "Anadolu’nun yeşil çimi. %100 organik, bahçenize hayat!", category: "Çim" },
+      { id: 25, name: "Organik Spor Saha Çim Tohumu", price: 45, description: "Dayanıklı spor çimi. Zehirsiz, kimyasalsız!", category: "Çim" },
+      { id: 26, name: "Organik Dekoratif Çim Tohumu", price: 38, description: "Dekoratif yeşillik için. %100 organik, doğal!", category: "Çim" },
+      // Otlar ve Baharatlar
+      { id: 27, name: "Organik Anadolu Kekik Tohumu", price: 18, description: "Anadolu’nun kokulu kekiği. %100 organik, lezzetli!", category: "Ot" },
+      { id: 28, name: "Organik Ege Nane Tohumu", price: 16, description: "Ege’nin ferah nanesi. Zehirsiz, doğal aroma!", category: "Ot" },
+      { id: 29, name: "Organik Akdeniz Fesleğen Tohumu", price: 19, description: "Akdeniz’in mis kokulu fesleğeni. %100 organik!", category: "Ot" },
+      { id: 30, name: "Organik Marmara Dereotu Tohumu", price: 17, description: "Marmara’nın taze dereotu. Kimyasalsız, doğal!", category: "Ot" },
+      { id: 31, name: "Organik Karadeniz Roket Tohumu", price: 20, description: "Karadeniz’in baharatlı rokası. %100 organik!", category: "Ot" },
+      // Konserveler
+      { id: 32, name: "Organik Ege Menemen", price: 35, description: "Anadolu’nun taptaze domatesleriyle %100 organik menemen. Çocuklar için zehirsiz!", category: "Konserve" },
+      { id: 33, name: "Organik Köz Patlıcan", price: 30, description: "Anadolu’nun közlenmiş lezzeti. Kimyasalsız, doğal!", category: "Konserve" },
+      { id: 34, name: "Organik Yaprak Sarma", price: 38, description: "Ege’nin organik yapraklarıyla sarma. Zehirsiz, sağlıklı!", category: "Konserve" },
+      { id: 35, name: "Organik Domates Sosu", price: 28, description: "Çanakkale domatesiyle organik sos. %100 doğal!", category: "Konserve" },
+      { id: 36, name: "Organik Kahvaltılık Sos", price: 32, description: "Anadolu’nun baharatlı kahvaltılık sosu. Kimyasalsız!", category: "Konserve" },
+      // Turşular
+      { id: 37, name: "Organik Salatalık Turşusu", price: 30, description: "Köy usulü fermente salatalık turşusu. %100 organik, probiyotik!", category: "Turşu" },
+      { id: 38, name: "Organik Biber Turşusu", price: 28, description: "Anadolu’nun acı biber turşusu. Zehirsiz, doğal!", category: "Turşu" },
+      { id: 39, name: "Organik Lahana Turşusu", price: 32, description: "Karadeniz’in fermente lahana turşusu. %100 organik!", category: "Turşu" },
+      { id: 40, name: "Organik Karışık Turşu", price: 35, description: "Anadolu’nun sebzeleriyle karışık turşu. Kimyasalsız!", category: "Turşu" },
+      { id: 41, name: "Organik Acuka Turşusu", price: 33, description: "Baharatlı acuka turşusu. %100 organik, lezzetli!", category: "Turşu" },
+      // Sirkeler
+      { id: 42, name: "Organik Üzüm Sirkesi", price: 25, description: "Anadolu’nun doğal üzüm sirkesi. Bağışıklık dostu, %100 organik!", category: "Sirke" },
+      { id: 43, name: "Organik Elma Sirkesi", price: 27, description: "Trakya’nın elmalarından organik sirke. Zehirsiz, sağlıklı!", category: "Sirke" },
+      { id: 44, name: "Organik Alıç Sirkesi", price: 30, description: "Anadolu’nun alıç sirkesi. %100 doğal, bağışıklık güçlendirici!", category: "Sirke" },
+    ];
+
+    let cart = [];
+
+    // Öne Çıkan Ürünler
+    const featuredProducts = [products[0], products[10], products[31], products[36], products[39], products[41]];
+    const featuredProductList = document.getElementById('featured-products');
+    featuredProducts.forEach(product => {
+      const productDiv = document.createElement('div');
+      productDiv.className = 'card bg-white p-4 rounded-lg shadow-lg';
+      productDiv.innerHTML = `
+        <img src="${product.image || 'https://images.unsplash.com/photo-1592840331052-3e1e819a56f0?ixlib=rb-4.0.3&auto=format&fit=crop&w=200'}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
+        <h3 class="text-xl font-bold mt-2 text-green-700">${product.name}</h3>
+        <p class="text-sm text-gray-600">${product.description}</p>
+        <p class="text-lg font-semibold text-green-600">${product.price} TL</p>
+        <p class="text-sm text-red-600 font-semibold">Sınırlı Stok! Son 3 Paket!</p>
+        <button onclick="addToCart(${product.id})" class="btn-primary text-white py-2 px-4 rounded-lg mt-2 w-full font-semibold">Sepete Ekle</button>
+      `;
+      featuredProductList.appendChild(productDiv);
+    });
+
+    // Tüm Ürünleri Listele
+    const productList = document.getElementById('product-list');
+    products.forEach(product => {
+      const productDiv = document.createElement('div');
+      productDiv.className = 'card bg-white p-4 rounded-lg shadow-lg';
+      productDiv.innerHTML = `
+        <img src="${product.image || 'https://images.unsplash.com/photo-1592840331052-3e1e819a56f0?ixlib=rb-4.0.3&auto=format&fit=crop&w=200'}" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
+        <h3 class="text-xl font-bold mt-2 text-green-700">${product.name}</h3>
+        <p class="text-sm text-gray-600">${product.description}</p>
+        <p class="text-lg font-semibold text-green-600">${product.price} TL</p>
+        <p class="text-sm text-red-600 font-semibold">Sınırlı Stok! Son 3!</p>
+        <button onclick="addToCart(${product.id})" class="btn-primary text-white py-2 px-4 rounded-lg mt-2 w-full font-semibold">Sepete Ekle</button>
+      `;
+      productList.appendChild(productDiv);
+    });
+
+    // Sepete Ekle
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      cart.push(product);
+      updateCart();
+    }
+
+    // Sepeti Güncelle
+    function updateCart() {
+      const cartItems = document.getElementById('cart-items');
+      const cartCount = document.getElementById('cart-count');
+      const cartTotal = document.getElementById('cart-total');
+      cartItems.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.price;
+        const cartItem = document.createElement('div');
+        cartItem.className = 'flex justify-between items-center bg-white p-4 rounded-lg shadow';
+        cartItem.innerHTML = `
+          <div>${item.name} - ${item.price} TL</div>
+          <button onclick="removeFromCart(${index})" class="text-red-600 hover:underline">Kaldır</button>
+        `;
+        cartItems.appendChild(cartItem);
+      });
+
+      cartCount.textContent = cart.length;
+      cartTotal.textContent = `Toplam: ${total} TL (Kargo: ${total >= 50 ? 'Ücretsiz' : '15 TL'})`;
+    }
+
+    // Sepetten Kaldır
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    // Sipariş Tamamla
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      if (cart.length > 0) {
+        alert('Siparişin alındı! Abi-kardeş konuşalım, detaylar için WhatsApp’tan yaz: +90 555 123 4567. Dilersen Dolap’ta tamamlayabilirsin. (Bu bir demo sitesidir).');
+        cart = [];
+        updateCart();
+      } else {
+        alert('Sepet boş! Hemen organik lezzetler seç, sofranı şenlendirelim!');
+      }
+    });
+  </script>
+</body>
+</html>
