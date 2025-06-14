@@ -3,82 +3,56 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Tohum Dükkanı – Anadolu’nun Bereketi</title>
-
-  <!-- Temel Meta -->
-  <meta name="description" content="Tohum Dükkanı: Anadolu’nun organik tohumları, konserveleri, turşuları ve sirkeleriyle zehirsiz bir gelecek!">
-  <meta name="keywords" content="organik tohum, turşu, sirke, Anadolu lezzetleri">
+  <meta name="description" content="Tohum Dükkanı: Anadolu’nun organik tohumları, konserveleri, turşuları ve sirkeleriyle zehirsiz bir gelecek! Çocuklar için sağlıklı, hızlı kargo, samimi destek.">
+  <meta name="keywords" content="organik tohum, zehirsiz konserve, doğal turşu, organik sirke, çocuk sağlığı, Anadolu lezzetleri, menemen, ata tohumu">
   <meta name="author" content="Tohum Dükkanı">
-
-  <!-- Open Graph (Sosyal Paylaşım) -->
-  <meta property="og:title"         content="Tohum Dükkanı – Anadolu’nun Bereketi">
-  <meta property="og:description"   content="Anadolu’nun organik tohumları, konserveleri, turşuları ve sirkeleriyle zehirsiz bir gelecek!">
-  <meta property="og:image"         content="https://tohumdukkani.netlify.app/hero.jpg">
-  <meta property="og:url"           content="https://tohumdukkani.com">
-  <meta property="og:type"          content="website">
-
-  <!-- Tailwind CSS ve Özel Stil -->
+  <title>Tohum Dükkanı - Anadolu’nun Bereketi</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
-    body { font-family: 'Poppins', sans-serif; background: #f5f5f5; }
-    .card { transition: transform .2s, box-shadow .2s; }
+    body { font-family: 'Poppins', sans-serif; background-color: #f5f5f5; }
+    .card { transition: transform 0.2s, box-shadow 0.2s; }
     .card:hover { transform: scale(1.05); box-shadow: 0 6px 20px rgba(0,0,0,0.15); }
-    header, footer { background: #166534; }
-    .btn-primary { background: #d4a017; }
-    .btn-primary:hover { background: #b38b14; }
-    .hero-bg { 
-      background: url('https://images.unsplash.com/photo-1598030343309-b83d3f7fe6b6?auto=format&fit=crop&w=1920') 
-                  center/cover no-repeat;
-    }
+    header, footer { background-color: #166534; }
+    .btn-primary { background-color: #d4a017; }
+    .btn-primary:hover { background-color: #b38b14; }
+    .hero-bg { background-image: url('https://images.unsplash.com/photo-1598030343309-b83d3f7fe6b6?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920'); background-size: cover; background-position: center; }
   </style>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
-
 <body>
-  <!-- 1) HEADER -->
+  <!-- Header -->
   <header class="text-white py-4">
     <div class="container mx-auto flex justify-between items-center px-4">
       <h1 class="text-3xl font-bold">Tohum Dükkanı</h1>
       <nav class="flex space-x-4">
-        <a href="#home"    class="hover:underline">Ana Sayfa</a>
-        <a href="#products"class="hover:underline">Ürünler</a>
-        <a href="#blog"    class="hover:underline">Blog</a>
-        <a href="#about"   class="hover:underline">Hakkımızda</a>
-        <a href="#cart"    class="hover:underline">
-          Sepet (<span id="cart-count">0</span>)
-        </a>
+        <a href="#home" class="px-3 py-2 hover:underline">Ana Sayfa</a>
+        <a href="#products" class="px-3 py-2 hover:underline">Ürünler</a>
+        <a href="#blog" class="px-3 py-2 hover:underline">Blog</a>
+        <a href="#about" class="px-3 py-2 hover:underline">Hakkımızda</a>
+        <a href="#cart" class="px-3 py-2 hover:underline">Sepet (<span id="cart-count">0</span>)</a>
       </nav>
     </div>
   </header>
 
-  <!-- 2) HERO -->
+  <!-- Hero Section -->
   <section id="home" class="hero-bg py-20 text-center text-white">
-    <div class="container mx-auto bg-black bg-opacity-50 p-10 rounded-lg">
+    <div class="container mx-auto px-4 bg-black bg-opacity-50 py-10 rounded-lg">
       <h2 class="text-4xl font-bold mb-4">Anadolu’nun Bereketiyle Sağlıklı Bir Gelecek!</h2>
-      <p class="mb-6">Zehirsiz, kimyasalsız ürünlerle çocuklarınızın sağlığını koruyoruz.</p>
-      <a href="#products" class="btn-primary px-6 py-2 rounded-lg">Keşfet</a>
-      <p class="mt-4 text-sm">İlk 100 siparişe nane tohumu hediye! 🎁</p>
+      <p class="text-lg mb-6">Zehirsiz, kimyasalsız ürünlerle çocuklarınızın sağlığını koruyoruz.</p>
+      <a href="#products" class="btn-primary text-white py-2 px-6 rounded-lg font-semibold">Keşfet</a>
+      <p class="text-sm mt-4 font-semibold">İlk 100 siparişe nane tohumu hediye! 🎁</p>
     </div>
   </section>
 
-  <!-- 3) ARAMA & FİLTRE -->
-  <section class="py-6 bg-white">
-    <div class="container mx-auto flex flex-col sm:flex-row gap-4 items-center px-4">
-      <input id="search-input" type="text" placeholder="Ürün ara..." class="border p-2 rounded-md flex-1">
-      <select id="category-filter" class="border p-2 rounded-md">
-        <option value="">Tüm Kategoriler</option>
-      </select>
-    </div>
-  </section>
-
-  <!-- 4) ÖNE ÇIKAN ÜRÜNLER -->
+  <!-- Featured Products -->
   <section class="py-16 bg-white">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8 text-green-800">Öne Çıkan Lezzetlerimiz</h2>
-      <div id="featured-products" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6" id="featured-products"></div>
     </div>
   </section>
 
-  <!-- 5) TÜM ÜRÜNLER -->
+  <!-- Products Section -->
   <section id="products" class="py-16 bg-white">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8 text-green-800">Anadolu’nun Zehirsiz Lezzetleri</h2>
@@ -86,7 +60,7 @@
     </div>
   </section>
 
-  <!-- 6) BLOG -->
+  <!-- Blog Section -->
   <section id="blog" class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8 text-green-800">Anadolu’nun Bahçecilik ve Lezzet Sırları</h2>
@@ -94,47 +68,54 @@
         <div class="card bg-white p-4 rounded-lg shadow">
           <h3 class="text-lg font-bold text-green-700">Hormonlu Ürünlerin Çocuk Sağlığına Zararları</h3>
           <p class="text-sm text-gray-600">Kimyasal yüklü gıdalar çocuklarınızı tehdit ediyor. Organik tohum ve konservelerle zehirsiz sofralar...</p>
-          <a href="#blog" class="text-blue-600 hover:underline">Devamını Oku</a>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
         </div>
         <div class="card bg-white p-4 rounded-lg shadow">
           <h3 class="text-lg font-bold text-green-700">Köylerimizde Turşu Yapımı Gelenekleri</h3>
           <p class="text-sm text-gray-600">Anadolu’nun köylerinde turşu nasıl yapılır? Geleneksel sırlar...</p>
-          <a href="#blog" class="text-blue-600 hover:underline">Devamını Oku</a>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
         </div>
         <div class="card bg-white p-4 rounded-lg shadow">
           <h3 class="text-lg font-bold text-green-700">Evde Organik Sirke Yapımı</h3>
           <p class="text-sm text-gray-600">Doğal sirkelerle bağışıklığınızı güçlendirin. 5 kolay adım...</p>
-          <a href="#blog" class="text-blue-600 hover:underline">Devamını Oku</a>
+          <a href="#" class="text-blue-600 hover:underline">Devamını Oku</a>
         </div>
       </div>
     </div>
   </section>
 
+  <!-- About Section -->
+  <section id="about" class="py-16 bg-gradient-to-r from-green-100 to-green-200">
+    <div class="container mx-auto px-4 text-center">
+      <h2 class="text-3xl font-bold mb-8 text-green-800">Biz Bir Aileyiz!</h2>
+      <p class="text-lg mb-6 text-gray-700">Tohum Dükkanı, Anadolu’nun bereketli topraklarından ilham alan bir aile. Organik tohumlar, konserveler, turşular ve sirkelerle çocuklarınızın sağlığını koruyor, zehirsiz bir gelecek inşa ediyoruz. Sanki komşunuzla kahve içermiş gibi, her zaman yanınızdayız!</p>
+      <p class="text-sm text-gray-600 font-semibold">7/24 Samimi Destek: +90 555 123 4567 | %100 Memnuniyet Garantisi</p>
+    </div>
+  </section>
 
-  <!-- 6) SEPET -->
+  <!-- Cart Section -->
   <section id="cart" class="py-16 bg-gray-50">
     <div class="container mx-auto px-4">
       <h2 class="text-3xl font-bold text-center mb-8 text-green-800">Sepetiniz</h2>
       <div id="cart-items" class="space-y-4"></div>
       <div id="cart-total" class="text-xl font-bold mt-4 text-green-700">Toplam: 0 TL</div>
-      <p class="mt-2 text-sm text-gray-600">Kargo: 15 TL (50 TL ve üzeri ücretsiz)</p>
-      <button id="checkout-btn" class="btn-primary px-6 py-2 rounded-lg mt-4">Siparişi Hesapla</button>
+      <p class="text-sm mt-2 text-gray-600">Kargo: 15 TL (50 TL ve üzeri ücretsiz)</p>
+      <button id="checkout-btn" class="btn-primary text-white py-2 px-6 rounded-lg mt-4 font-semibold">Siparişi Hesapla</button>
     </div>
   </section>
 
-  <!-- 7) FOOTER -->
+  <!-- Footer -->
   <footer class="text-white py-4">
-    <div class="container mx-auto text-center px-4">
-      <p class="font-semibold">© 2025 Tohum Dükkanı. Anadolu’nun Bereketi.</p>
+    <div class="container mx-auto px-4 text-center">
+      <p class="text-lg font-semibold">© 2025 Tohum Dükkanı. Anadolu’nun Bereketi.</p>
       <p class="text-sm">WhatsApp: +90 555 123 4567 | Türkiye’nin Her Yerine Kargo</p>
     </div>
   </footer>
 
-  <!-- 8) JAVASCRIPT: ARAMA, FİLTRE, SEPET & LOCALSTORAGE -->
   <script>
-    // --- 8.1 ÜRÜN VERİSİ (Kendi kodundan kopyala) ---
+    // Ürünler (Geniş Yelpaze)
     const products = [
-        // Sebze Tohumları
+       // Sebze Tohumları
       { id: 1, name: "Organik Çanakkale Domates Tohumu", price: 25, description: "Anadolu’nun bereketli Çanakkale topraklarından %100 organik ata tohumu. Zehirsiz, çocuklar için sağlıklı!", category: "Sebze" },
       { id: 2, name: "Organik Ege Salatalık Tohumu", price: 20, description: "Ege’nin güneşinden gelen ata tohumu. Kimyasalsız, yüksek verim!", category: "Sebze" },
       { id: 3, name: "Organik Akdeniz Biber Tohumu", price: 28, description: "Akdeniz’in sıcacık ata tohumu. Zehirsiz, sofralarınıza sağlık!", category: "Sebze" },
@@ -189,100 +170,86 @@
 
     ];
 
-    // --- 8.2 SEPETİ LOCALSTORAGE’DAN YÜKLE/SAVE ET ---
     let cart = [];
-    function loadCart() {
-      const stored = localStorage.getItem('cart');
-      if (stored) cart = JSON.parse(stored);
+
+    // Öne Çıkan Ürünler
+    const featuredProducts = [products[0], products[2], products[3], products[4], products[5]];
+    const featuredProductList = document.getElementById('featured-products');
+    featuredProducts.forEach(product => {
+      const productDiv = document.createElement('div');
+      productDiv.className = 'card bg-white p-4 rounded-lg shadow-lg';
+      productDiv.innerHTML = `
+        <img src="https://images.unsplash.com/photo-1592840331052-3e1e819a56f0?ixlib=rb-4.0.3&auto=format&fit=crop&w=200" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
+        <h3 class="text-xl font-bold mt-2 text-green-700">${product.name}</h3>
+        <p class="text-sm text-gray-600">${product.description}</p>
+        <p class="text-lg font-semibold text-green-600">${product.price} TL</p>
+        <p class="text-sm text-red-600 font-semibold">Sınırlı Stok! Son 3!</p>
+        <button onclick="addToCart(${product.id})" class="btn-primary text-white py-2 px-4 rounded-lg mt-2 w-full font-semibold">Sepete Ekle</button>
+      `;
+      featuredProductList.appendChild(productDiv);
+    });
+
+    // Tüm Ürünleri Listele
+    const productList = document.getElementById('product-list');
+    products.forEach(product => {
+      const productDiv = document.createElement('div');
+      productDiv.className = 'card bg-white p-4 rounded-lg shadow-lg';
+      productDiv.innerHTML = `
+        <img src="https://images.unsplash.com/photo-1592840331052-3e1e819a56f0?ixlib=rb-4.0.3&auto=format&fit=crop&w=200" alt="${product.name}" class="w-full h-48 object-cover rounded-lg">
+        <h3 class="text-xl font-bold mt-2 text-green-700">${product.name}</h3>
+        <p class="text-sm text-gray-600">${product.description}</p>
+        <p class="text-lg font-semibold text-green-600">${product.price} TL</p>
+        <p class="text-sm text-red-600 font-semibold">Sınırlı Stok! Son 3!</p>
+        <button onclick="addToCart(${product.id})" class="btn-primary text-white py-2 px-4 rounded-lg mt-2 w-full font-semibold">Sepete Ekle</button>
+      `;
+      productList.appendChild(productDiv);
+    });
+
+    // Sepete Ekle
+    function addToCart(productId) {
+      const product = products.find(p => p.id === productId);
+      cart.push(product);
       updateCart();
     }
-    function saveCart() {
-      localStorage.setItem('cart', JSON.stringify(cart));
-    }
 
-    // --- 8.3 KATEGORİ MENÜSÜNÜ DOLDUR ---
-    function populateCategories() {
-      const sel = document.getElementById('category-filter');
-      const cats = [...new Set(products.map(p => p.category))];
-      cats.forEach(cat => {
-        const opt = document.createElement('option');
-        opt.value = cat; opt.textContent = cat;
-        sel.appendChild(opt);
-      });
-    }
-
-    // --- 8.4 ARAMA & FİLTRE UYGULA ---
-    let filtered = [...products];
-    function applyFilters() {
-      const term = document.getElementById('search-input').value.toLowerCase();
-      const cat  = document.getElementById('category-filter').value;
-      filtered = products.filter(p => {
-        const matchText = p.name.toLowerCase().includes(term) 
-                       || p.description.toLowerCase().includes(term);
-        const matchCat  = !cat || p.category === cat;
-        return matchText && matchCat;
-      });
-      renderProducts();
-    }
-
-    // --- 8.5 ÜRÜNLERİ EKRANA BAS (LAZY-LOAD İLE) ---
-    function renderProducts() {
-      const container = document.getElementById('product-list');
-      container.innerHTML = '';
-      filtered.forEach(p => {
-        const card = document.createElement('div');
-        card.className = 'card bg-white p-4 rounded-lg shadow-lg';
-        card.innerHTML = `
-          <img loading="lazy" src="${p.image||''}" alt="${p.name}" class="w-full h-48 object-cover rounded-lg">
-          <h3 class="text-xl font-bold mt-2 text-green-700">${p.name}</h3>
-          <p class="text-sm text-gray-600">${p.description}</p>
-          <p class="text-lg font-semibold text-green-600">${p.price} TL</p>
-          <button onclick="addToCart(${p.id})" class="btn-primary w-full py-2 mt-2">Sepete Ekle</button>
-        `;
-        container.appendChild(card);
-      });
-    }
-
-    // --- 8.6 SEPETE EKLE & KALDIR & GÜNCELLE ---
-    function addToCart(id) {
-      cart.push(products.find(p=>p.id===id));
-      updateCart(); saveCart();
-    }
-    function removeFromCart(i) {
-      cart.splice(i,1);
-      updateCart(); saveCart();
-    }
+    // Sepeti Güncelle
     function updateCart() {
-      const list = document.getElementById('cart-items');
-      const count = document.getElementById('cart-count');
-      const total = document.getElementById('cart-total');
-      list.innerHTML = '';
-      let sum = 0;
-      cart.forEach((item,i)=> {
-        sum += item.price;
-        const row = document.createElement('div');
-        row.className = 'flex justify-between bg-white p-4 rounded shadow';
-        row.innerHTML = `
-          <span>${item.name} - ${item.price} TL</span>
-          <button onclick="removeFromCart(${i})" class="text-red-600 hover:underline">Kaldır</button>
+      const cartItems = document.getElementById('cart-items');
+      const cartCount = document.getElementById('cart-count');
+      const cartTotal = document.getElementById('cart-total');
+      cartItems.innerHTML = '';
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        total += item.price;
+        const cartItem = document.createElement('div');
+        cartItem.className = 'flex justify-between items-center bg-white p-4 rounded-lg shadow';
+        cartItem.innerHTML = `
+          <div>${item.name} - ${item.price} TL</div>
+          <button onclick="removeFromCart(${index})" class="text-red-600 hover:underline">Kaldır</button>
         `;
-        list.appendChild(row);
+        cartItems.appendChild(cartItem);
       });
-      count.textContent = cart.length;
-      total.textContent = `Toplam: ${sum} TL (Kargo: ${sum>=50?'Ücretsiz':'15 TL'})`;
+
+      cartCount.textContent = cart.length;
+      cartTotal.textContent = `Toplam: ${total} TL`;
     }
 
-    // --- 8.7 SAYFA YÜKLENDİĞİNDE ÇAĞRI ---
-    document.addEventListener('DOMContentLoaded', () => {
-      populateCategories();
-      document.getElementById('search-input').addEventListener('input', applyFilters);
-      document.getElementById('category-filter').addEventListener('change', applyFilters);
-      document.getElementById('checkout-btn').addEventListener('click', () => {
-        if (cart.length) alert('Sipariş alındı! WhatsApp’tan detaylar: +90 555 123 4567');
-        else alert('Sepet boş!');
-      });
-      loadCart();
-      renderProducts();
+    // Sepetten Kaldır
+    function removeFromCart(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    // Sipariş Tamamla
+    document.getElementById('checkout-btn').addEventListener('click', () => {
+      if (cart.length > 0) {
+        alert('Siparişin alındı! Abi-kardeş konuşalım, detaylar için WhatsApp’tan yaz: +90 555 123 4567. Dilersen Dolap’tan tamamlayabilirsin. (Demo sitesidir)');
+        cart = [];
+        updateCart();
+      } else {
+        alert('Sepet boş! Organik lezzetler seç, sofranı şenlendirelim!');
+      }
     });
   </script>
 </body>
