@@ -1,12 +1,51 @@
-<!DOCTYPE html>
+<script type="text/javascript">
+        var gk_isXlsx = false;
+        var gk_xlsxFileLookup = {};
+        var gk_fileData = {};
+        function filledCell(cell) {
+          return cell !== '' && cell != null;
+        }
+        function loadFileData(filename) {
+        if (gk_isXlsx && gk_xlsxFileLookup[filename]) {
+            try {
+                var workbook = XLSX.read(gk_fileData[filename], { type: 'base64' });
+                var firstSheetName = workbook.SheetNames[0];
+                var worksheet = workbook.Sheets[firstSheetName];
+
+                // Convert sheet to JSON to filter blank rows
+                var jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1, blankrows: false, defval: '' });
+                // Filter out blank rows (rows where all cells are empty, null, or undefined)
+                var filteredData = jsonData.filter(row => row.some(filledCell));
+
+                // Heuristic to find the header row by ignoring rows with fewer filled cells than the next row
+                var headerRowIndex = filteredData.findIndex((row, index) =>
+                  row.filter(filledCell).length >= filteredData[index + 1]?.filter(filledCell).length
+                );
+                // Fallback
+                if (headerRowIndex === -1 || headerRowIndex > 25) {
+                  headerRowIndex = 0;
+                }
+
+                // Convert filtered JSON back to CSV
+                var csv = XLSX.utils.aoa_to_sheet(filteredData.slice(headerRowIndex)); // Create a new sheet from filtered array of arrays
+                csv = XLSX.utils.sheet_to_csv(csv, { header: 1 });
+                return csv;
+            } catch (e) {
+                console.error(e);
+                return "";
+            }
+        }
+        return gk_fileData[filename] || "";
+        }
+        </script><!DOCTYPE html>
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Tohum Dükkanı: Anadolu’nun bağrından kopan organik tohumlar, konserveler, turşular ve sirkelerle zehirsiz sofralar! Çocuklar için sağlıklı, samimi destek.">
-  <meta name="keywords" content="organik tohum, doğal konserve, köy turşusu, organik sirke, çocuk sağlığı, Anadolu lezzetleri, ata tohumu">
-  <meta name="author" content="Tohum Dükkanı">
-  <title>Tohum Dükkanı - Anadolu’nun Bağrından Kopan Lezzetler</title>
+  <meta name="description" content="Tohum Dükkan: Anadolu’nun bağrından kopan organik tohumlar, konserveler, turşular ve sirkelerle zehirsiz sofralar! Çocuklar için sağlıklı, samimi destek.">
+  <meta name="keywords" content="organik tohum, doğal konserve, köy turşusu, organik sirke, vegan, glütensiz, çocuk sağlığı, Anadolu lezzetleri, ata tohumu, gastronomi turizmi">
+  <meta name="author" content="Tohum Dükkan">
+  <title>Tohum Dükkan - Anadolu’nun Bağrından Kopan Lezzetler</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <style>
     body { font-family: 'Poppins', sans-serif; background-color: #f5f5f5; }
@@ -25,7 +64,7 @@
   <!-- Header -->
   <header class="text-gray-800 py-4">
     <div class="container mx-auto flex justify-between items-center px-6">
-      <h1 class="text-2xl font-semibold">Tohum Dükkanı</h1>
+      <h1 class="text-2xl font-semibold">Tohum Dükkan</h1>
       <nav class="flex space-x-4">
         <a href="#home" class="px-3 py-1 hover:text-yellow-600 transition">Ana Sayfa</a>
         <a href="#products" class="px-3 py-1 hover:text-yellow-600 transition">Ürünler</a>
@@ -40,7 +79,7 @@
   <section id="home" class="hero-bg flex items-center">
     <div class="container mx-auto text-center px-4 text-white">
       <h2 class="text-4xl font-bold mb-6 animate-fade-in">Anadolu’nun Bağrından Kopan Lezzetler!</h2>
-      <p class="text-lg mb-8">Zehirsiz, kimyasalsız ürünlerle çocuklarınızın sağlığını koruyoruz.</p>
+      <p class="text-lg mb-8">Zehirsiz, vegan ve kişiselleştirilmiş seçeneklerle sağlıklı sofralar.</p>
       <a href="#products" class="btn-primary text-white py-2 px-6 rounded-full font-medium animate-pulse">Keşfet</a>
       <p class="text-lg mt-4 font-medium animate-bounce">İlk 100 siparişe nane tohumu hediye! 🎁</p>
     </div>
@@ -74,7 +113,7 @@
   <section id="about" class="py-20 bg-gradient-to-r from-green-100 to-green-200">
     <div class="container mx-auto px-4 text-center">
       <h2 class="text-3xl font-bold mb-8 text-green-800">Biz Bir Aileyiz!</h2>
-      <p class="text-lg mb-6 text-gray-700">Tohum Dükkanı, Anadolu’nun bağrından kopan bereketli topraklardan ilham alıyor. Organik tohumlar, konserveler, turşular ve sirkelerle çocuklarınızın sağlığını koruyor, zehirsiz bir gelecek sunuyoruz. Sanki komşunuzla kahve içiyormuş gibi, her zaman yanınızdayız!</p>
+      <p class="text-lg mb-6 text-gray-700">Tohum Dükkan, Anadolu’nun bağrından kopan bereketli topraklardan ilham alıyor. Organik tohumlar, konserveler, turşular ve sirkelerle çocuklarınızın sağlığını koruyor, zehirsiz bir gelecek sunuyoruz. Sanki komşunuzla kahve içiyormuş gibi, her zaman yanınızdayız!</p>
       <p class="text-lg font-medium text-gray-600">7/24 Samimi Destek: <a href="https://wa.me/905551234567" class="text-green-700 hover:underline">+90 555 123 4567</a> | %100 Memnuniyet Garantisi</p>
     </div>
   </section>
@@ -87,13 +126,14 @@
       <div id="cart-total" class="text-2xl font-bold mt-6 text-green-700">Toplam: 0 TL</div>
       <p class="text-lg mt-2 text-gray-600">Kargo: <span id="shipping-cost">15 TL</span> (50 TL ve üzeri ücretsiz)</p>
       <button id="checkout-btn" class="btn-primary text-white py-3 px-8 rounded-full mt-6 font-medium">Siparişi Hesapla</button>
+      <p class="text-sm mt-2 text-gray-500">Diyet tercihinizi belirtmek için sipariş notu ekleyebilirsiniz!</p>
     </div>
   </section>
 
   <!-- Footer -->
   <footer class="text-white py-6">
     <div class="container mx-auto px-4 text-center">
-      <p class="text-xl font-medium">© 2025 Tohum Dükkanı. Anadolu’nun Bağrından Kopan Lezzetler.</p>
+      <p class="text-xl font-medium">© 2025 Tohum Dükkan. Anadolu’nun Bağrından Kopan Lezzetler.</p>
       <p class="text-lg">WhatsApp: <a href="https://wa.me/905551234567" class="text-yellow-300 hover:underline">+90 555 123 4567</a> | Türkiye’nin Her Yerine Kargo</p>
     </div>
   </footer>
@@ -105,6 +145,7 @@
       <img id="detail-image" class="w-full h-64 object-cover rounded mt-4">
       <p id="detail-description" class="text-gray-600 mt-4"></p>
       <p id="detail-price" class="text-xl font-bold text-green-600 mt-2"></p>
+      <a id="detail-blog-link" class="text-blue-600 hover:underline mt-2 inline-block" href="#" target="_blank"></a>
       <button onclick="closeDetail()" class="btn-primary text-white py-2 px-4 rounded-full mt-4">Kapat</button>
     </div>
   </div>
@@ -117,26 +158,48 @@
   </div>
 
   <script>
-    // Ürünler (15 Adet, 30+’ya Çıkarılabilir)
-    const products = [
-      { id: 1, name: "Organik Çanakkale Domates Tohumu", price: 25, description: "Anadolu’nun bereketli ata tohumu, zehirsiz!", category: "Sebze", image: "placeholder.jpg" },
-      { id: 2, name: "Organik Ege Salatalık Tohumu", price: 20, description: "Ege’nin güneşinden kimyasalsız tohum!", category: "Sebze", image: "placeholder.jpg" },
-      { id: 3, name: "Organik Ege Menemen", price: 35, description: "Taptaze domateslerle %100 organik!", category: "Konserve", image: "placeholder.jpg" },
-      { id: 4, name: "Organik Salatalık Turşusu", price: 30, description: "Köy usulü fermente, probiyotik!", category: "Turşu", image: "placeholder.jpg" },
-      { id: 5, name: "Organik Üzüm Sirkesi", price: 25, description: "Doğal üzümden bağışıklık dostu!", category: "Sirke", image: "placeholder.jpg" },
-      { id: 6, name: "Organik Ege Lavanta Tohumu", price: 30, description: "Mis kokulu, %100 organik!", category: "Çiçek", image: "placeholder.jpg" },
-      { id: 7, name: "Organik Akdeniz Biber Tohumu", price: 28, description: "Akdeniz’in sıcacık ata tohumu!", category: "Sebze", image: "placeholder.jpg" },
-      { id: 8, name: "Organik Köz Patlıcan", price: 30, description: "Odun ateşinde %100 organik!", category: "Konserve", image: "placeholder.jpg" },
-      { id: 9, name: "Organik Biber Turşusu", price: 28, description: "Köyümüzden fermente lezzet!", category: "Turşu", image: "placeholder.jpg" },
-      { id: 10, name: "Organik Elma Sirkesi", price: 27, description: "Trakya’nın elmalarından doğal!", category: "Sirke", image: "placeholder.jpg" },
-      { id: 11, name: "Organik Trakya Papatya Tohumu", price: 25, description: "Zarif ve kimyasalsız!", category: "Çiçek", image: "placeholder.jpg" },
-      { id: 12, name: "Organik Karadeniz Lahana Tohumu", price: 22, description: "Verimli topraklardan ata tohumu!", category: "Sebze", image: "placeholder.jpg" },
-      { id: 13, name: "Organik Yaprak Sarma", price: 38, description: "Ege’nin organik yaprakları!", category: "Konserve", image: "placeholder.jpg" },
-      { id: 14, name: "Organik Lahana Turşusu", price: 32, description: "Karadeniz’in fermente lezzeti!", category: "Turşu", image: "placeholder.jpg" },
-      { id: 15, name: "Organik Alıç Sirkesi", price: 30, description: "Anadolu’nun şifalı sirkesi!", category: "Sirke", image: "placeholder.jpg" },
-    ];
+    // Ürünler 
+const products = [
+  { id: 1, name: "Organik Çanakkale Domates Tohumu", price: 25, description: "Anadolu’nun bereketli ata tohumu, zehirsiz!", category: "Sebze", image: "images/domates-tohumu.jpg", blogId: null },
+  { id: 2, name: "Organik Ege Salatalık Tohumu", price: 20, description: "Ege’nin güneşinden kimyasalsız tohum!", category: "Sebze", image: "images/salatalik-tohumu.jpg", blogId: null },
+  { id: 3, name: "Organik Ege Menemen", price: 35, description: "Taptaze domateslerle %100 organik!", category: "Konserve", image: "images/menemen.jpg", blogId: null },
+  { id: 4, name: "Organik Salatalık Turşusu", price: 30, description: "Köy usulü fermente, probiyotik!", category: "Turşu", image: "images/salatalik-tursu.jpg", blogId: null },
+  { id: 5, name: "Organik Üzüm Sirkesi", price: 25, description: "Doğal üzümden bağışıklık dostu!", category: "Sirke", image: "images/uzum-sirkesi.jpg", blogId: null },
+  { id: 6, name: "Organik Ege Lavanta Tohumu", price: 30, description: "Mis kokulu, %100 organik!", category: "Çiçek", image: "images/lavanta-tohumu.jpg", blogId: null },
+  { id: 7, name: "Organik Akdeniz Biber Tohumu", price: 28, description: "Akdeniz’in sıcacık ata tohumu!", category: "Sebze", image: "images/biber-tohumu.jpg", blogId: null },
+  { id: 8, name: "Organik Köz Patlıcan", price: 30, description: "Odun ateşinde %100 organik!", category: "Konserve", image: "images/koz-patlican.jpg", blogId: null },
+  { id: 9, name: "Organik Biber Turşusu", price: 28, description: "Köyümüzden fermente lezzet!", category: "Turşu", image: "images/biber-tursu.jpg", blogId: null },
+  { id: 10, name: "Organik Elma Sirkesi", price: 27, description: "Trakya’nın elmalarından doğal!", category: "Sirke", image: "images/elma-sirkesi.jpg", blogId: null },
+  { id: 11, name: "Organik Trakya Papatya Tohumu", price: 25, description: "Zarif ve kimyasalsız!", category: "Çiçek", image: "images/papatya-tohumu.jpg", blogId: null },
+  { id: 12, name: "Organik Karadeniz Lahana Tohumu", price: 22, description: "Verimli topraklardan ata tohumu!", category: "Sebze", image: "images/lahana-tohumu.jpg", blogId: null },
+  { id: 13, name: "Organik Yaprak Sarma", price: 38, description: "Ege’nin organik yaprakları!", category: "Konserve", image: "images/yaprak-sarma.jpg", blogId: null },
+  { id: 14, name: "Organik Lahana Turşusu", price: 32, description: "Karadeniz’in fermente lezzeti!", category: "Turşu", image: "images/lahana-tursu.jpg", blogId: null },
+  { id: 15, name: "Organik Alıç Sirkesi", price: 30, description: "Anadolu’nun şifalı sirkesi!", category: "Sirke", image: "images/alic-sirkesi.jpg", blogId: null },
+  { id: 16, name: "Vegan Menemen", price: 40, description: "Bitkisel bazlı, %100 organik!", category: "Konserve", image: "images/vegan-menemen.jpg", blogId: 13 },
+  { id: 17, name: "Glütensiz Turşu", price: 35, description: "Hassas midede bile rahat!", category: "Turşu", image: "images/glutensiz-tursu.jpg", blogId: 14 },
+  { id: 18, name: "Chia Tohumlu Reçel", price: 45, description: "Süper gıda ile sağlıklı tat!", category: "Konserve", image: "images/chia-receli.jpg", blogId: 15 },
+  { id: 19, name: "Lahana Turşusu", price: 25, description: "Ev yapımı, taze ve lezzetli lahana turşusu.", category: "Turşu", image: "images/lahana_tursusu.jpg", blogId: null },
+  { id: 20, name: "Papatya", price: 15, description: "Doğal papatya çiçekleri, dekorasyon ve çay için.", category: "Çiçek", image: "images/papatya.jpg", blogId: null },
+  { id: 21, name: "Patlıcan Salatası", price: 30, description: "Taze patlıcanlarla hazırlanmış nefis salata.", category: "Konserve", image: "images/patlican_salatasi.jpg", blogId: null },
+  { id: 22, name: "Kırmızı Biber", price: 20, description: "Taze ve baharatlı kırmızı biberler.", category: "Sebze", image: "images/kirmizi_biber.jpg", blogId: null },
+  { id: 23, name: "Patlıcan", price: 18, description: "Taze ve parlak mor patlıcanlar.", category: "Sebze", image: "images/patlican.jpg", blogId: null },
+  { id: 24, name: "Patates", price: 15, description: "Yeni hasat taze patatesler.", category: "Sebze", image: "images/patates.jpg", blogId: null },
+  { id: 25, name: "Karnabahar", price: 20, description: "Besleyici ve taze karnabahar.", category: "Sebze", image: "images/karnabahar.jpg", blogId: null },
+  { id: 26, name: "Çeşitli Biberler", price: 25, description: "Renkli ve lezzetli biber karışımı.", category: "Sebze", image: "images/cesitli_biberler.jpg", blogId: null },
+  { id: 27, name: "Yeşil Lahana", price: 10, description: "Taze ve sağlıklı yeşil lahana.", category: "Sebze", image: "images/yesil_lahana.jpg", blogId: null },
+  { id: 28, name: "Kırmızı Biberler", price: 22, description: "Taze kırmızı biberler, yemekler için ideal.", category: "Sebze", image: "images/kirmizi_biberler.jpg", blogId: null },
+  { id: 29, name: "Üzüm ve Şarap", price: 40, description: "Taze üzüm ve ev yapımı şarap.", category: "Konserve", image: "images/uzum_sarap.jpg", blogId: null },
+  { id: 30, name: "Lavanta", price: 20, description: "Kokulu lavanta çiçekleri, dekor ve yağ için.", category: "Çiçek", image: "images/lavanta.jpg", blogId: null },
+  { id: 31, name: "Yaprak Sarma", price: 35, description: "El yapımı, geleneksel yaprak sarma.", category: "Konserve", image: "images/yaprak_sarma.jpg", blogId: null },
+  { id: 32, name: "Peynirli Biber Sosu", price: 30, description: "Akıcı ve lezzetli peynirli biber sosu.", category: "Konserve", image: "images/peynirli_biber_sosu.jpg", blogId: null },
+  { id: 33, name: "Yeşil Fasulye", price: 18, description: "Taze ve çıtır yeşil fasulye.", category: "Sebze", image: "images/yesil_fasulye.jpg", blogId: null },
+  { id: 34, name: "Sarımsak", price: 15, description: "Taze ve aromatik sarımsak.", category: "Sebze", image: "images/sarmisak.jpg", blogId: null },
+  { id: 35, name: "Salatalık", price: 10, description: "Sulu ve taze salatalıklar.", category: "Sebze", image: "images/salatalik.jpg", blogId: null },
+  { id: 36, name: "Pazar Tezgahı Karışımı", price: 50, description: "Çeşitli taze sebzeler ve meyveler.", category: "Sebze", image: "images/pazar_tezgahi.jpg", blogId: null },
+  { id: 37, name: "Yeşil Biberler", price: 20, description: "Taze ve lezzetli yeşil biberler.", category: "Sebze", image: "images/yesil_biberler.jpg", blogId: null },
+];
 
-    // Blog İçerikleri (12 Adet)
+    // Blog İçerikleri (18 Adet)
     const blogPosts = [
       { id: 1, title: "Hormonlu Ürünlerin Çocuk Sağlığına Zararları", excerpt: "Kimyasal yüklü gıdalar çocuklarınızı tehdit ediyor...", content: "Detaylı içerik buraya..." },
       { id: 2, title: "Köylerimizde Turşu Yapımı Gelenekleri", excerpt: "Anadolu’nun köylerinde turşu nasıl yapılır?", content: "Detaylı içerik buraya..." },
@@ -150,12 +213,16 @@
       { id: 10, title: "Köy Kahvesinde Tohum Hikayeleri", excerpt: "Anadolu’nun sıcacık anıları...", content: "Detaylı içerik buraya..." },
       { id: 11, title: "Organik Menemenle Sağlıklı Kahvaltılar", excerpt: "Anadolu’nun sabah sırrı...", content: "Detaylı içerik buraya..." },
       { id: 12, title: "Sirkelerin Bağışıklığa Faydaları", excerpt: "Doğal sirkelerle sağlık...", content: "Detaylı içerik buraya..." },
+      { id: 13, title: "Vegan Menemen Tarifi", excerpt: "Bitkisel bazlı lezzet, 15 dakikada hazır!", content: "Malzemeler: 2 yemek kaşığı zeytinyağı, 1 küçük soğan (doğranmış), 2 yeşil biber (doğranmış), 2 domates (küp doğranmış), 200 gr silken tofu (ufalanmış), tuz, karabiber, pul biber. Yapılışı: Zeytinyağını tavada ısıtın, soğanı soteleyin. Biberleri ekleyip 3-4 dakika kavurun. Domatesleri ilave edin, yumuşayana kadar pişirin. Tofuyu ekleyip karıştırın, baharatlarla tatlandırın. 5-6 dakika pişirip servis yapın. Yanında ekmekle harika!" },
+      { id: 14, title: "Glütensiz Turşu Yapımı", excerpt: "Herkes için fermente lezzet!", content: "Malzemeler: 1 kg salatalık, 1 litre su, 2 yemek kaşığı kaya tuzu, 2 diş sarımsak, dereotu. Yapılışı: Salatalıkları yıkayıp kavanoza dizin. Suyu tuzla karıştırıp kaynatın, soğutun. Sarımsak ve dereotunu ekleyip kavanozu doldurun. Oda sıcaklığında 1 hafta fermente edin. Buzdolabında saklayın." },
+      { id: 15, title: "Chia Tohumlu Reçel Tarifi", excerpt: "Sağlıklı ve lezzetli!", content: "Malzemeler: 2 su bardağı çilek (ezilmiş), 2 yemek kaşığı chia tohumu, 1 yemek kaşığı bal, 1 yemek kaşığı limon suyu. Yapılışı: Çilekleri bir tencerede ısıtın, bal ve limon suyunu ekleyin. Kaynamaya başlayınca chia tohumlarını ekleyip karıştırın. 10 dakika koyulaşması için pişirin. Soğutup kavanoza koyun." },
+      { id: 16, title: "Anadolu Lezzet Turları: Tohum Dükkanı Rehberi", excerpt: "Yerel pazarlar ve tarifler...", content: "Detaylı içerik buraya..." },
     ];
 
     let cart = [];
 
     // Öne Çıkan Ürünler
-    const featuredProducts = [products[0], products[2], products[3], products[4], products[5]];
+    const featuredProducts = [products[0], products[2], products[19], products[20], products[31]]; // Örnek olarak farklı ürünler seçildi
     const featuredProductList = document.getElementById('featured-products');
     featuredProducts.forEach(product => {
       const productDiv = document.createElement('div');
@@ -213,6 +280,14 @@
         document.getElementById('detail-image').src = product.image;
         document.getElementById('detail-description').textContent = product.description;
         document.getElementById('detail-price').textContent = `${product.price} TL`;
+        const blogPost = blogPosts.find(b => b.id === product.blogId);
+        if (blogPost) {
+          document.getElementById('detail-blog-link').href = `#blog-${blogPost.id}`;
+          document.getElementById('detail-blog-link').textContent = `Tarif için tıklayın: ${blogPost.title}`;
+        } else {
+          document.getElementById('detail-blog-link').href = "#";
+          document.getElementById('detail-blog-link').textContent = "";
+        }
       } else {
         const post = blogPosts.find(p => p.id === id);
         document.getElementById('blog-title').textContent = post.title;
